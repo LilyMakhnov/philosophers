@@ -40,17 +40,18 @@ void	free_philos(t_philo **philos, unsigned int i)
 
 void	*time_eat(void *arg)
 {
-	long unsigned int i;
+	long long st;
+	long long i;
 	t_philo *philo;
 
+	st = ft_get_time();
 	philo = (t_philo*)arg;
 	i = 0;
 	while (i < philo->data.time_to_die)
 	{
-		usleep(1000);
-		i = get_time(philo->data);
+		i = ft_get_time() - st;
 	}
-	printf("dead : %lu\n", i);
+	printf("dead : %llu, philo %i\n", i, philo->id);
 	write(1, "DEAD\n", 5);
 	return (NULL);
 }
@@ -61,21 +62,28 @@ void	*start_routine(void *arg)
 	pthread_t p_time;
 	
 	philo = (t_philo*)arg;
-	pthread_create(&p_time, NULL, &time_eat, &philo);
+	pthread_create(&p_time, NULL, &time_eat, philo);
+	pthread_mutex_lock(philo->m_display);
+	printf("---%lu ms %i is sleeping\n",get_time(philo->data),  philo->id);
+	pthread_mutex_unlock(philo->m_display);
+	usleep(philo->data.time_to_sleep * 1000);
+	pthread_mutex_lock(philo->m_display);
+	printf("---%lu ms %i is thinking\n", get_time(philo->data), philo->id);
+	pthread_mutex_unlock(philo->m_display);
 	while (1)
 	{
 		pthread_mutex_lock(philo->m_fork_l);
 		pthread_mutex_lock(philo->m_fork_r);
 		pthread_detach(p_time);
-		pthread_create(&p_time, NULL, &time_eat, &philo);
+		pthread_create(&p_time, NULL, &time_eat, philo);
 		pthread_mutex_lock(philo->m_display);
 		printf("---%lu ms %i takes the forks\n", get_time(philo->data), philo->id);
 		printf("---%lu ms %i eats\n", get_time(philo->data), philo->id);
 		pthread_mutex_unlock(philo->m_display);
 		usleep(philo->data.time_to_eat * 1000);
+		pthread_mutex_lock(philo->m_display);
 		pthread_mutex_unlock(philo->m_fork_l);
 		pthread_mutex_unlock(philo->m_fork_r);
-		pthread_mutex_lock(philo->m_display);
 		printf("---%lu ms %i take off the forks\n", get_time(philo->data), philo->id);
 		printf("---%lu ms %i is sleeping\n",get_time(philo->data),  philo->id);
 		pthread_mutex_unlock(philo->m_display);
@@ -143,6 +151,10 @@ int main(int argc, char **argv)
 	{
 		pthread_create(&philos[i].pthread, NULL, &start_routine, &philos[i]);
 		usleep(10);
+	}
+	while (1)
+	{
+		sleep(1);
 	}
 	sleep(5);
 	i = -1;

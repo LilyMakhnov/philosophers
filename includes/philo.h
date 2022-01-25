@@ -36,5 +36,6 @@ typedef struct s_philo
 long unsigned int	get_time(t_data data);
 //void	get_time_start(unsigned int *start_s, unsigned int *start_ms);
 void	get_time_start(t_data *data);
+long long	ft_get_time(void);
 
 #endif
