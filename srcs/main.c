@@ -1,12 +1,6 @@
 #include "philo.h"
 
-unsigned int	get_time(unsigned int start)
-{
-	struct timeval	current_time;
 
-	gettimeofday(&current_time, NULL);
-	return ((unsigned int)(current_time.tv_sec * 1000000 + current_time.tv_usec - start));
-}
 
 int	check_nb_argc(int argc)
 {
@@ -18,18 +12,18 @@ int	check_nb_argc(int argc)
 	return (0);
 }
 
-//WARNING atoi and memset as to be replaced by ft_*()
+//WARNING memset as to be replaced by ft_*()
 int	ft_fill_data(int argc, char **argv, t_data *data)
 {
 	if (check_nb_argc(argc))
 		return (1);
-	memset(data, 0, sizeof(t_data));
-	data->nbr_philos = atoi(argv[1]);
-	data->time_to_die = atoi(argv[2]);
-	data->time_to_eat = atoi(argv[3]);
-	data->time_to_sleep = atoi(argv[4]);
+//	memset(data, 0, sizeof(t_data));
+	data->nbr_philos = ft_atoi(argv[1]);
+	data->time_to_die = ft_atoi(argv[2]);
+	data->time_to_eat = ft_atoi(argv[3]);
+	data->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		data->nbr_max_eat = atoi(argv[5]);
+		data->nbr_max_eat = ft_atoi(argv[5]);
 	return (0);		
 }
 
@@ -46,12 +40,17 @@ void	free_philos(t_philo **philos, unsigned int i)
 
 void	*time_eat(void *arg)
 {
-	unsigned int i;
+	long unsigned int i;
 	t_philo *philo;
 
 	philo = (t_philo*)arg;
+	i = 0;
 	while (i < philo->data.time_to_die)
-		i = get_time(philo->data.time_start);
+	{
+		usleep(1000);
+		i = get_time(philo->data);
+	}
+	printf("dead : %lu\n", i);
 	write(1, "DEAD\n", 5);
 	return (NULL);
 }
@@ -70,19 +69,19 @@ void	*start_routine(void *arg)
 		pthread_detach(p_time);
 		pthread_create(&p_time, NULL, &time_eat, &philo);
 		pthread_mutex_lock(philo->m_display);
-		printf("---%i ms %i takes the forks\n", get_time(philo->data.time_start)/1000, philo->id);
-		printf("---%i ms %i eats\n", get_time(philo->data.time_start)/1000, philo->id);
+		printf("---%lu ms %i takes the forks\n", get_time(philo->data), philo->id);
+		printf("---%lu ms %i eats\n", get_time(philo->data), philo->id);
 		pthread_mutex_unlock(philo->m_display);
 		usleep(philo->data.time_to_eat * 1000);
 		pthread_mutex_unlock(philo->m_fork_l);
 		pthread_mutex_unlock(philo->m_fork_r);
 		pthread_mutex_lock(philo->m_display);
-		printf("---%i ms %i take off the forks\n", get_time(philo->data.time_start)/1000, philo->id);
-		printf("---%i ms %i is sleeping\n",get_time(philo->data.time_start)/1000,  philo->id);
+		printf("---%lu ms %i take off the forks\n", get_time(philo->data), philo->id);
+		printf("---%lu ms %i is sleeping\n",get_time(philo->data),  philo->id);
 		pthread_mutex_unlock(philo->m_display);
 		usleep(philo->data.time_to_sleep * 1000);
 		pthread_mutex_lock(philo->m_display);
-		printf("---%i ms %i is thinking\n", get_time(philo->data.time_start)/1000, philo->id);
+		printf("---%lu ms %i is thinking\n", get_time(philo->data), philo->id);
 		pthread_mutex_unlock(philo->m_display);
 	}
 	return (NULL);
@@ -135,18 +134,17 @@ int main(int argc, char **argv)
 	t_philo *philos;
 	int i;
 	
+	get_time_start(&data);
+	sleep(2);
 	if (ft_fill_data(argc, argv, &data) || ft_init_philos(&philos, data))
 		return (1);
-	data.time_start = get_time(0);
 	i = -1;
 	while (++i < (int)data.nbr_philos)
 	{
 		pthread_create(&philos[i].pthread, NULL, &start_routine, &philos[i]);
 		usleep(10);
 	}
-	printf("%i\n", get_time(data.time_start));
 	sleep(5);
-	printf("%i\n", get_time(data.time_start));
 	i = -1;
 	while (++i < (int)data.nbr_philos)
 		pthread_detach(philos[i].pthread);

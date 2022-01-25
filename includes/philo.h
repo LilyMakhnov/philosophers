@@ -1,6 +1,7 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+#include "libft.h"
 #include <unistd.h>
 #include <stdlib.h> //atoi
 #include <string.h> //memset
@@ -15,7 +16,8 @@ typedef struct s_data
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	unsigned int	nbr_max_eat;
-	unsigned int	time_start;
+	time_t			time_start;
+	suseconds_t		time_start_ms;
 }	t_data;
 
 typedef struct s_philo
@@ -30,6 +32,9 @@ typedef struct s_philo
 	t_data data;
 }	t_philo;
 
-unsigned int    get_time(unsigned int start);
+//unsigned int	get_time(unsigned int start_s, unsigned int start_ms);
+long unsigned int	get_time(t_data data);
+//void	get_time_start(unsigned int *start_s, unsigned int *start_ms);
+void	get_time_start(t_data *data);
 
 #endif
