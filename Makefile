@@ -11,7 +11,7 @@
 # **************************************************************************** #
 NAME = philo
 
-SRCS	=	main.c time.c
+SRCS	=	main.c time.c action.c init.c exit.c
 
 OBJS	=	$(addprefix $(OBJDIR),$(SRCS:.c=.o))
 DEPS	=	$(addprefix $(DEPDIR),$(SRCS:.c=.d))
