@@ -19,6 +19,9 @@ typedef struct s_data
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	unsigned int	nbr_max_eat;
+	pthread_mutex_t m_eat;
+	pthread_mutex_t m_die;
+	pthread_mutex_t m_display;
 	time_t			time_start;
 	suseconds_t		time_start_ms;
 }	t_data;
@@ -28,14 +31,14 @@ typedef struct s_philo
 	int id;
 	pthread_mutex_t m_fork_l;
 	pthread_mutex_t *m_fork_r;
-    pthread_mutex_t *m_display;
-	pthread_mutex_t *m_die;
 	pthread_t	pthread;
 	int *die;
 	int status;
 	long long t_last_eat;
-	t_data data;
+	t_data *data;
 }	t_philo;
+
+int	ft_launch_philos(t_philo **philos);
 
 void	philo_sleep(t_philo *philo);
 void	philo_eat(t_philo *philo);
@@ -60,5 +63,6 @@ long unsigned int	get_time(t_data data);
 //void	get_time_start(unsigned int *start_s, unsigned int *start_ms);
 void	get_time_start(t_data *data);
 long long	ft_get_time(void);
+void	ft_sleep(/*t_philo *philo,*/ int time);
 
 #endif

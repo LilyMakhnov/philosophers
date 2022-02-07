@@ -32,15 +32,15 @@ long long	ft_get_time(void)
 	return (current_time.tv_sec  * 1000 + current_time.tv_usec  / 1000);
 }
 
-void	ft_sleep(t_philo *philo, int time)
+void	ft_sleep(/*t_philo *philo,*/ int time)
 {
 	long long t;
 
 	t = ft_get_time();
 	while (ft_get_time() - t < time)
 	{
-		if(!_death(*philo))
-			break;
+//		if(!_death(*philo))
+//			break;
 		usleep(time/10);		
 	}
 }
