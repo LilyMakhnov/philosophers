@@ -36,6 +36,7 @@ int	ft_init_philos(t_philo **philos, t_data *data)
 	i = -1;
 	while (++i < data->nbr_philos)
 	{
+		(*philos)[i].nb_eat = data->nbr_max_eat;
 		(*philos)[i].id = i + 1;
 		(*philos)[i].die = die;
 	}

@@ -32,6 +32,7 @@ typedef struct s_philo
 	pthread_mutex_t m_fork_l;
 	pthread_mutex_t *m_fork_r;
 	pthread_t	pthread;
+	int nb_eat;
 	int *die;
 	int status;
 	long long t_last_eat;
