@@ -21,8 +21,12 @@ void	philo_eat(t_philo *philo)
 		display_state(philo, "is eating");
 //		usleep(philo->data->time_to_eat * 1000);
 		ft_sleep(philo->data->time_to_eat);
-		if (philo->nb_eat > 0)
-			philo->nb_eat--;
+		if (philo->nbr_meal > 0)
+		{	
+			pthread_mutex_lock(&(philo)->data->m_display);
+			philo->nbr_meal--;
+			pthread_mutex_unlock(&(philo)->data->m_display);
+		}
 		pthread_mutex_unlock(philo->m_fork_r);
 	}
 	pthread_mutex_unlock(&philo->m_fork_l);

@@ -16,7 +16,7 @@ SRCS	=	main.c time.c action.c init.c exit.c
 OBJS	=	$(addprefix $(OBJDIR),$(SRCS:.c=.o))
 DEPS	=	$(addprefix $(DEPDIR),$(SRCS:.c=.d))
 LIBFT	=   libft/libft.a
-FLAGS	=	-Wall -Wextra -Werror -g3 -fsanitize=thread
+FLAGS	=	-Wall -Wextra -Werror  -g3 -fsanitize=thread
 SRCDIR	=	./srcs/
 OBJDIR	=	./objs/
 DEPDIR	=	./objs/

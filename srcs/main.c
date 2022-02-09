@@ -84,7 +84,7 @@ void	*start_routine(void *arg)
 	display_state(philo, "is thinking");	
 	if (philo->id % 2)
 		ft_sleep(philo->data->time_to_eat/2);	
-	while (!_death(*philo) && philo->nb_eat)
+	while (!_death(*philo) && philo->nbr_meal)
 	{
 		if (!_death(*philo))
 			philo_eat(philo);
@@ -109,7 +109,9 @@ int ft_error(int i)
 void	monitor_end(t_philo **philo)
 {
 	int i;
+	unsigned int j;
 	long long t_eat;
+	int nb_eat;
 
 	while (!_death((*philo[0]))) //*(*philo)[0].die //!_death((*philo[0]))
 	{
@@ -127,7 +129,26 @@ void	monitor_end(t_philo **philo)
 				pthread_mutex_unlock(&(*philo)->data->m_die);
 				break;
 			}
-			pthread_exit
+		}
+		i = -1;
+		j = 0;
+		while ((*philo)[0].data->nbr_max_eat > -1 && ++i < (int)(*philo)[0].data->nbr_philos)
+		{
+			pthread_mutex_lock(&(*philo)->data->m_display);
+			nb_eat = (*philo)[i].nbr_meal;
+			pthread_mutex_unlock(&(*philo)->data->m_display);
+			if (nb_eat == 0)
+				j++;
+			else 
+				break;
+			if (j == (*philo)[i].data->nbr_philos)
+			{
+				pthread_mutex_lock(&(*philo)->data->m_die);
+				printf("done");
+				*(*philo)->die = DIE;
+				pthread_mutex_unlock(&(*philo)->data->m_die);
+				break;
+			}
 		}
 	}
 }

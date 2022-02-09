@@ -18,7 +18,7 @@ typedef struct s_data
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
-	unsigned int	nbr_max_eat;
+	int	nbr_max_eat;
 	pthread_mutex_t m_eat;
 	pthread_mutex_t m_die;
 	pthread_mutex_t m_display;
@@ -32,9 +32,9 @@ typedef struct s_philo
 	pthread_mutex_t m_fork_l;
 	pthread_mutex_t *m_fork_r;
 	pthread_t	pthread;
-	int nb_eat;
 	int *die;
 	int status;
+	int nbr_meal;
 	long long t_last_eat;
 	t_data *data;
 }	t_philo;
