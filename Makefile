@@ -15,20 +15,16 @@ SRCS	=	main.c time.c action.c init.c exit.c
 
 OBJS	=	$(addprefix $(OBJDIR),$(SRCS:.c=.o))
 DEPS	=	$(addprefix $(DEPDIR),$(SRCS:.c=.d))
-LIBFT	=   libft/libft.a
 FLAGS	=	-Wall -Wextra -Werror  -g3 -fsanitize=thread
 SRCDIR	=	./srcs/
 OBJDIR	=	./objs/
 DEPDIR	=	./objs/
 INCDIR	=	./includes/
 
-all:		$(LIBFT) $(LIBMLX) $(NAME)
+all:		$(NAME)
 
 $(OBJDIR)%.o:	$(SRCDIR)%.c
 			gcc $(FLAGS) -MMD -MP -c -I libft -I $(INCDIR) $< -o $@
-
-$(LIBFT):		
-			make bonus -C libft
 
 $(OBJDIR):
 			mkdir -p $(OBJDIR)
@@ -38,11 +34,9 @@ $(NAME):	$(OBJDIR) $(OBJS)
 
 clean:
 			/bin/rm -rf objs
-			make -C ./libft clean
 
 fclean:		clean
 			/bin/rm -f $(NAME)
-			make -C ./libft/ fclean
 
 re:			fclean all
 
