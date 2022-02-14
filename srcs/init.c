@@ -1,12 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: esivre <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/14 11:19:58 by esivre            #+#    #+#             */
+/*   Updated: 2022/02/14 11:20:01 by esivre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	ft_init_mutex(t_philo **philos, t_data data, t_mutex *mutex)
 {
-	unsigned int i;
+	unsigned int	i;
 
 	pthread_mutex_init(&mutex->m_nbr_meal, NULL);
 	pthread_mutex_init(&mutex->m_die, NULL);
 	pthread_mutex_init(&mutex->m_eat, NULL);
+	pthread_mutex_init(&mutex->m_display, NULL);
 	mutex->die = ALIVE;
 	i = -1;
 	while (++i < data.nbr_philos)
@@ -23,12 +36,15 @@ int	ft_init_mutex(t_philo **philos, t_data data, t_mutex *mutex)
 
 int	ft_init_philos(t_philo **philos, t_data data, t_mutex *mutex)
 {
-	unsigned int i;
+	unsigned int	i;
 
 	*philos = malloc(sizeof(t_philo) * data.nbr_philos);
 	if (!philos)
-		return (ft_error(1));
-	memset(*philos, 0, sizeof(philos) * data.nbr_philos);	
+	{
+		write(1, "Error\n", ft_strlen("Error\n"));
+		return (1);
+	}
+	memset(*philos, 0, sizeof(philos) * data.nbr_philos);
 	i = -1;
 	while (++i < data.nbr_philos)
 	{
@@ -40,15 +56,14 @@ int	ft_init_philos(t_philo **philos, t_data data, t_mutex *mutex)
 
 int	ft_launch_philos(t_philo **philos, t_data data)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < (int)data.nbr_philos)
 	{
-		pthread_mutex_lock(&(*philos)[i].mutex->m_eat);
 		(*philos)[i].t_last_eat = ft_get_time();
-		pthread_mutex_unlock(&(*philos)[i].mutex->m_eat);
-		pthread_create(&(*philos)[i].pthread, NULL, &start_routine, &(*philos)[i]);
+		pthread_create(&(*philos)[i].pthread, NULL,
+			&start_routine, &(*philos)[i]);
 	}
 	return (1);
 }
