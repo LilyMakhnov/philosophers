@@ -54,8 +54,8 @@ void	monitor_nb_meals(t_philo **philo, t_data data)
 		if (j == data.nbr_philos)
 		{
 			pthread_mutex_lock(&(*philo)->mutex->m_die);
+			usleep(5000);
 			printf("Each philo ate at least %i times\n", data.nbr_max_eat);
-			usleep(500);
 			(*philo)->mutex->die = DIE;
 			pthread_mutex_unlock(&(*philo)->mutex->m_die);
 			break ;

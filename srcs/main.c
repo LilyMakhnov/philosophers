@@ -22,11 +22,11 @@ int	check_nb_argc(int argc, char **argv)
 	if (ft_atoi(argv[1]) <= 0 || ft_atoi(argv[1]) > 200)
 		return (1);
 	if (ft_atoi(argv[2]) < 60 || ft_atoi(argv[2]) > 2147483647)
-		return (1);	
+		return (1);
 	if (ft_atoi(argv[3]) < 60 || ft_atoi(argv[3]) > 2147483647)
 		return (1);
 	if (ft_atoi(argv[4]) < 60 || ft_atoi(argv[4]) > 2147483647)
-		return (1);	
+		return (1);
 	if (argc == 6)
 		if (ft_atoi(argv[5]) < 0 || ft_atoi(argv[5]) > 2147483647)
 			return (1);
@@ -70,15 +70,16 @@ void	display_state(t_philo *philo, char *str)
 	if (!_death(philo))
 	{
 		to_print[0] = 0;
-		pthread_mutex_lock(&(*philo).mutex->m_eat);
+		pthread_mutex_lock(&(*philo).mutex->m_display);
 		ft_nbr_to_str(to_print, get_time(philo->data));
-		pthread_mutex_unlock(&(*philo).mutex->m_eat);
 		ft_strcat(to_print, " ");
 		ft_nbr_to_str(to_print, philo->id);
 		ft_strcat(to_print, " ");
 		ft_strcat(to_print, str);
 		ft_strcat(to_print, "\n");
-		write(1, to_print, ft_strlen(to_print));
+		if (!_death(philo))
+			write(1, to_print, ft_strlen(to_print));
+		pthread_mutex_unlock(&(*philo).mutex->m_display);
 	}
 }
 
@@ -91,7 +92,7 @@ int	main(int argc, char **argv)
 
 	if (ft_fill_data(argc, argv, &data)
 		|| ft_init_philos(&philos, data, &mutex))
-		return (write(2, "Error\n", ft_strlen("Error\n")),1);
+		return (write(2, "Error\n", ft_strlen("Error\n")), 1);
 	ft_launch_philos(&philos, data);
 	monitor_end(&philos, data);
 	i = -1;
