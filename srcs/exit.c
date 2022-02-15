@@ -12,12 +12,6 @@
 
 #include "philo.h"
 
-void	free_philos(t_philo **philos)
-{
-	free(*philos);
-	*philos = NULL;
-}
-
 void	ft_destroy_mutex(t_philo **philos, t_data data)
 {
 	int	i;
