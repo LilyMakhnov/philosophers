@@ -16,8 +16,6 @@ int	ft_init_mutex(t_philo **philos, t_data data, t_mutex *mutex)
 {
 	unsigned int	i;
 
-	pthread_mutex_init(&mutex->m_nbr_meal, NULL);
-	pthread_mutex_init(&mutex->m_die, NULL);
 	pthread_mutex_init(&mutex->m_eat, NULL);
 	pthread_mutex_init(&mutex->m_display, NULL);
 	mutex->die = ALIVE;
@@ -60,10 +58,22 @@ int	ft_launch_philos(t_philo **philos, t_data data)
 
 	i = -1;
 	while (++i < (int)data.nbr_philos)
+		(*philos)[i].t_last_eat = ft_get_time();
+	i = -1;
+	while (++i < (int)data.nbr_philos / 2)
 	{
 		(*philos)[i].t_last_eat = ft_get_time();
 		pthread_create(&(*philos)[i].pthread, NULL,
 			&start_routine, &(*philos)[i]);
+		(*philos)[(int)data.nbr_philos - 1 - i].t_last_eat = ft_get_time();
+		pthread_create(&(*philos)[(int)data.nbr_philos - 1 - i].pthread, NULL,
+			&start_routine, &(*philos)[(int)data.nbr_philos - 1 - i]);
+	}
+	if ((int)data.nbr_philos % 2)
+	{
+		(*philos)[(int)data.nbr_philos / 2].t_last_eat = ft_get_time();
+		pthread_create(&(*philos)[(int)data.nbr_philos / 2].pthread, NULL,
+			&start_routine, &(*philos)[(int)data.nbr_philos / 2]);
 	}
 	return (1);
 }

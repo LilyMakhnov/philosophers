@@ -14,64 +14,39 @@
 
 void	monitor_death(t_philo **philo, t_data data)
 {
-	int	i;
+	int	i[2];
 
-	i = -1;
-	while (++i < (int)data.nbr_philos)
+	i[0] = -1;
+	i[1] = 0;
+	while (++i[0] < (int)data.nbr_philos)
 	{
 		pthread_mutex_lock(&(*philo)->mutex->m_eat);
-		if (ft_get_time() - (*philo)[i].t_last_eat >= data.time_to_die)
+		if (!(*philo)[i[0]].nbr_meal)
+			i[1]++;
+		if (ft_get_time() - (*philo)[i[0]].t_last_eat > data.time_to_die
+			|| i[1] == (int)data.nbr_philos)
 		{
-			pthread_mutex_unlock(&(*philo)->mutex->m_eat);
-			pthread_mutex_lock(&(*philo)->mutex->m_die);
+			pthread_mutex_lock(&(*philo)->mutex->m_display);
 			(*philo)->mutex->die = DIE;
-			display_state_death(&(*philo)[i], "is dead");
-			usleep(500);
-			pthread_mutex_unlock(&(*philo)->mutex->m_die);
-			break ;
+			pthread_mutex_unlock(&(*philo)->mutex->m_display);
+			pthread_mutex_unlock(&(*philo)->mutex->m_eat);
+			pthread_mutex_lock(&(*philo)->mutex->m_display);
+			if (i[1] == (int)data.nbr_philos)
+				printf("Each philo ate at least %i times\n", data.nbr_max_eat);
+			else
+				display_state_no_mutex(&(*philo)[i[0]], "is dead");
+			return ((void)pthread_mutex_unlock(&(*philo)->mutex->m_display));
 		}
 		pthread_mutex_unlock(&(*philo)->mutex->m_eat);
 	}
 }
 
-void	monitor_nb_meals(t_philo **philo, t_data data)
-{
-	int				i;
-	unsigned int	j;
-	int				nb_eat;
-
-	i = -1;
-	j = 0;
-	while (data.nbr_max_eat > -1 && ++i < (int)data.nbr_philos)
-	{
-		pthread_mutex_lock(&(*philo)->mutex->m_nbr_meal);
-		nb_eat = (*philo)[i].nbr_meal;
-		pthread_mutex_unlock(&(*philo)->mutex->m_nbr_meal);
-		if (nb_eat == 0)
-			j++;
-		else
-			break ;
-		if (j == data.nbr_philos)
-		{
-			pthread_mutex_lock(&(*philo)->mutex->m_die);
-			usleep(5000);
-			printf("Each philo ate at least %i times\n", data.nbr_max_eat);
-			(*philo)->mutex->die = DIE;
-			pthread_mutex_unlock(&(*philo)->mutex->m_die);
-			break ;
-		}
-	}
-}
-
 void	monitor_end(t_philo **philo, t_data data)
 {
-	while (!_death((*philo)))
+	ft_sleep((*philo)->data.time_to_die / 2);
+	while ((*philo)->mutex->die == ALIVE)
 	{
-		usleep(50);
+		usleep(100);
 		monitor_death(philo, data);
-		if (_death((*philo)))
-			break ;
-		usleep(50);
-		monitor_nb_meals(philo, data);
 	}
 }

@@ -38,8 +38,6 @@ typedef struct s_mutex
 {
 	pthread_mutex_t	m_display;
 	pthread_mutex_t	m_eat;
-	pthread_mutex_t	m_die;
-	pthread_mutex_t	m_nbr_meal;
 	int				die;
 }	t_mutex;
 
@@ -55,7 +53,8 @@ typedef struct s_philo
 	t_mutex			*mutex;
 }	t_philo;
 
-void				display_state_death(t_philo *philo, char *str);
+void				display_state_no_mutex(t_philo *philo, char *str);
+void				display_state(t_philo *philo, char *str);
 int					ft_isdigit(int c);
 char				*ft_strcat(char *dest, char *src);
 void				ft_nbr_to_str(char *str, long long nb);
@@ -68,15 +67,10 @@ int					ft_init_mutex(t_philo **philos,
 						t_data data, t_mutex *mutex);
 int					ft_init_philos(t_philo **philos,
 						t_data data, t_mutex *mutex);
-void				free_philos(t_philo **philos);
 void				ft_destroy_mutex(t_philo **philos, t_data data);
-int					_death(t_philo *philo);
-int					_all_meal(t_philo philo);
 int					check_nb_argc(int argc, char **argv);
 int					ft_fill_data(int argc, char **argv, t_data *data);
-void				display_state(t_philo *philo, char *str);
 void				*start_routine(void *arg);
-int					ft_error(int i);
 void				monitor_end(t_philo **philo, t_data data);
 long unsigned int	get_time(t_data data);
 void				get_time_start(t_data *data);

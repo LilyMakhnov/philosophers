@@ -49,7 +49,7 @@ int	ft_fill_data(int argc, char **argv, t_data *data)
 	return (0);
 }
 
-void	display_state_death(t_philo *philo, char *str)
+void	display_state_no_mutex(t_philo *philo, char *str)
 {
 	char	to_print[50];
 
@@ -67,20 +67,19 @@ void	display_state(t_philo *philo, char *str)
 {
 	char	to_print[50];
 
-	if (!_death(philo))
+	pthread_mutex_lock(&philo->mutex->m_display);
+	if (philo->mutex->die == ALIVE)
 	{
 		to_print[0] = 0;
-		pthread_mutex_lock(&(*philo).mutex->m_display);
 		ft_nbr_to_str(to_print, get_time(philo->data));
 		ft_strcat(to_print, " ");
 		ft_nbr_to_str(to_print, philo->id);
 		ft_strcat(to_print, " ");
 		ft_strcat(to_print, str);
 		ft_strcat(to_print, "\n");
-		if (!_death(philo))
-			write(1, to_print, ft_strlen(to_print));
-		pthread_mutex_unlock(&(*philo).mutex->m_display);
+		write(1, to_print, ft_strlen(to_print));
 	}
+	pthread_mutex_unlock(&philo->mutex->m_display);
 }
 
 int	main(int argc, char **argv)
@@ -99,6 +98,6 @@ int	main(int argc, char **argv)
 	while (++i < (int)data.nbr_philos)
 		pthread_join(philos[i].pthread, NULL);
 	ft_destroy_mutex(&philos, data);
-	free_philos(&philos);
+	free(philos);
 	return (0);
 }

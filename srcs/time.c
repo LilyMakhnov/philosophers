@@ -47,5 +47,5 @@ void	ft_sleep(int time)
 
 	t = ft_get_time();
 	while (ft_get_time() - t < time)
-		usleep(25);
+		usleep(time / 10);
 }
