@@ -60,6 +60,7 @@ int	ft_launch_philos(t_philo **philos, t_data data)
 	while (++i < (int)data.nbr_philos)
 		(*philos)[i].t_last_eat = ft_get_time();
 	i = -1;
+	pthread_mutex_lock(&(*philos)->mutex->m_display);
 	while (++i < (int)data.nbr_philos / 2)
 	{
 		(*philos)[i].t_last_eat = ft_get_time();
@@ -75,5 +76,6 @@ int	ft_launch_philos(t_philo **philos, t_data data)
 		pthread_create(&(*philos)[(int)data.nbr_philos / 2].pthread, NULL,
 			&start_routine, &(*philos)[(int)data.nbr_philos / 2]);
 	}
+	pthread_mutex_unlock(&(*philos)->mutex->m_display);
 	return (1);
 }

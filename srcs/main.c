@@ -28,7 +28,7 @@ int	check_nb_argc(int argc, char **argv)
 	if (ft_atoi(argv[4]) < 60 || ft_atoi(argv[4]) > 2147483647)
 		return (1);
 	if (argc == 6)
-		if (ft_atoi(argv[5]) < 0 || ft_atoi(argv[5]) > 2147483647)
+		if (ft_atoi(argv[5]) <= 0 || ft_atoi(argv[5]) > 2147483647)
 			return (1);
 	return (0);
 }

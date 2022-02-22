@@ -46,7 +46,7 @@ void	monitor_end(t_philo **philo, t_data data)
 	ft_sleep((*philo)->data.time_to_die / 2);
 	while ((*philo)->mutex->die == ALIVE)
 	{
-		usleep(100);
+		usleep(50);
 		monitor_death(philo, data);
 	}
 }

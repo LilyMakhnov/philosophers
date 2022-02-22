@@ -6,7 +6,7 @@
 #    By: esivre <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/27 16:19:19 by esivre            #+#    #+#              #
-#    Updated: 2022/02/16 00:06:40 by esivre           ###   ########.fr        #
+#    Updated: 2022/02/22 13:54:36 by esivre           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = philo
@@ -15,7 +15,7 @@ SRCS	=	main.c time.c action.c init.c exit.c utils.c monitor_end.c
 
 OBJS	=	$(addprefix $(OBJDIR),$(SRCS:.c=.o))
 DEPS	=	$(addprefix $(DEPDIR),$(SRCS:.c=.d))
-FLAGS	=	-Wall -Wextra -Werror -g3 -fsanitize=thread
+FLAGS	=	-Wall -Wextra -Werror #-g3 -fsanitize=thread
 SRCDIR	=	./srcs/
 OBJDIR	=	./objs/
 DEPDIR	=	./objs/
